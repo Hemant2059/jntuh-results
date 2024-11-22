@@ -41,7 +41,7 @@ function calculateSGPA(semesterData: any, hallTicket: string) {
   }
 
   // Calculate SGPA for the semester
-  let sgpa = totalWeightedGradePoints / totalCredits;
+  const sgpa = totalWeightedGradePoints / totalCredits;
 
   // Round SGPA to two decimal places
   return sgpa.toFixed(2);
