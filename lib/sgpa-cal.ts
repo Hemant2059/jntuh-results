@@ -1,49 +1,59 @@
-function calculateSGPA(semesterData: any, hallTicket: string) {
-  const gradePointMappingForR22 = {
-    O: 10,
-    A: 9,
-    B: 8,
-    C: 7,
-    D: 6,
-    F: 0,
-    Ab: 0,
-  } as { [key: string]: number };
-  const gradePointMapping = {
-    O: 10,
-    "A+": 9,
-    A: 8,
-    "B+": 7,
-    B: 6,
-    C: 5,
-    F: 0,
-    Ab: 0,
-  } as { [key: string]: number };
+const gradePointMappingForR22: { [key: string]: number } = {
+  O: 10,
+  A: 9,
+  B: 8,
+  C: 7,
+  D: 6,
+  F: 0,
+  Ab: 0,
+};
 
+const gradePointMapping: { [key: string]: number } = {
+  O: 10,
+  "A+": 9,
+  A: 8,
+  "B+": 7,
+  B: 6,
+  C: 5,
+  F: 0,
+  Ab: 0,
+};
+
+function calculateSGPA(semesterData: any, hallTicket: string): string {
   let totalCredits = 0.0;
   let totalWeightedGradePoints = 0;
-  const firsttwodigit = parseInt(hallTicket.slice(0, 2));
+
+  const firstTwoDigits = parseInt(hallTicket.slice(0, 2));
+  const gradeMapping =
+    firstTwoDigits >= 22 ? gradePointMappingForR22 : gradePointMapping;
 
   for (const subjectCode in semesterData) {
     if (["total", "credits", "CGPA"].includes(subjectCode)) continue;
+
     const subject = semesterData[subjectCode];
-    const grade = subject.grade;
-    if (grade === "F" || grade === "Ab") {
-      return "AALU";
+
+    if (!subject || !subject.grade || !subject.credits) {
+      console.warn(`Invalid data for subject ${subjectCode}`);
+      continue;
     }
+
+    const grade = subject.grade;
     const credit = parseFloat(subject.credits);
 
-    totalCredits += credit;
-    if (firsttwodigit >= 22)
-      totalWeightedGradePoints += gradePointMappingForR22[grade] * credit;
-    else {
-      totalWeightedGradePoints += gradePointMapping[grade] * credit;
+    if (grade === "F" || grade === "Ab") {
+      return "0.0"; // Adjust this behavior as needed.
     }
+
+    totalCredits += credit;
+    totalWeightedGradePoints += (gradeMapping[grade] || 0) * credit;
   }
 
-  // Calculate SGPA for the semester
-  const sgpa = totalWeightedGradePoints / totalCredits;
+  if (totalCredits === 0) {
+    console.warn("No valid credits found for SGPA calculation.");
+    return "0.00";
+  }
 
-  // Round SGPA to two decimal places
+  const sgpa = totalWeightedGradePoints / totalCredits;
   return sgpa.toFixed(2);
 }
 

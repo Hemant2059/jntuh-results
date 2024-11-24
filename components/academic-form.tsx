@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +14,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// Define Zod schema for Hallticket
+const hallticketSchema = z.string().regex(/^[0-9A-Z]{10}$/, {
+  message: "Hallticket must be enter",
+});
+
 export function AcademicForm() {
   const [hallticket, setHallticket] = useState("");
+  const [error, setError] = useState("");
+
+  const handleInputChange = (value: string) => {
+    const uppercasedValue = value.toUpperCase();
+    setHallticket(uppercasedValue);
+
+    // Validate the hallticket
+    try {
+      hallticketSchema.parse(uppercasedValue); // Validates against the schema
+      setError(""); // Clear the error if valid
+    } catch (e) {
+      setError((e as z.ZodError).errors[0]?.message || "Invalid hallticket"); // Display the first error message
+    }
+  };
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -31,19 +51,21 @@ export function AcademicForm() {
             <Input
               id="hallticket"
               type="text"
-              onChange={(e) => setHallticket(e.target.value.toUpperCase)}
-              placeholder="20XXXXXX01"
+              value={hallticket}
+              onChange={(e) => handleInputChange(e.target.value)}
+              placeholder="20E41A05C9"
               required
             />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
-          <Button>
+          <Button disabled={!!error || !hallticket}>
             <Link href={`/academic/${hallticket}`} className="w-full">
               Find Result
             </Link>
           </Button>
         </div>
         <div className="mt-4 text-right text-sm font-bold">
-          Made by Bishal Pathak{" "}
+          Made by Bishal Pathak
         </div>
       </CardContent>
     </Card>
