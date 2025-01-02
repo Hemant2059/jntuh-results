@@ -148,7 +148,7 @@ export default function ClassPerformanceForm() {
             <CardHeader>
               <CardTitle className="text-2xl text-center">Class Result</CardTitle>
               <CardDescription>
-                Enter one Student's <strong>Details</strong> below to get class results.
+                Enter one Student&apos;s <strong>Details</strong> below to get class results.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -220,7 +220,7 @@ export default function ClassPerformanceForm() {
                     />
                   </div>
                 </div>
-                <div className="text-xs text-red-500"> Note: Enter the last student's number like <strong>20XXXXXXA9</strong> then <strong>A9</strong> otherwise <strong>0</strong></div>
+                <div className="text-xs text-red-500"> Note: Enter the last student&apos;s number like <strong>20XXXXXXA9</strong> then <strong>A9</strong> otherwise <strong>0</strong></div>
                 {/* Submit Button */}
                 <Button
                   type="submit"

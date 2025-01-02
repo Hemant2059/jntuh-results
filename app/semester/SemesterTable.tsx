@@ -1,6 +1,6 @@
 import React from "react";
 import calculateSGPA from "@/lib/sgpa-cal";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -55,7 +55,7 @@ const SemesterTableComponent: React.FC<TableClassProps> = ({ result , semester})
     if (!result || !result.Details || !result.Result) {
         return <div>No result available</div>;
     }
-    let name = result.Details.NAME || "Unknown";
+    const name = result.Details.NAME || "Unknown";
     const collegeCode = result.Details.COLLEGE_CODE as keyof typeof colleges;
     const collegeName = colleges[collegeCode] || "Unknown";
     const courseCode = result.Details.Roll_No.slice(6, 8) as keyof typeof branches;

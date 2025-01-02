@@ -16,10 +16,6 @@ export const generateHallTicket = (hallticket: any, regular: any, lateral: any) 
     const regularhall = parseInput(regular);
     const lateralhall = parseInput(lateral);
 
-
-    console.log(regularhall);
-    console.log(lateralhall);
-
   // If the input is a valid number, return the number
   
   let year = Number(hallticket.slice(0, 2));
@@ -28,7 +24,7 @@ export const generateHallTicket = (hallticket: any, regular: any, lateral: any) 
     if (typeof regularhall === "number") {
       if (regularhall !== 0){
       for (let i = 0; i <= 99; i++) {
-        let last = i.toString().padStart(2, "0");
+        const last = i.toString().padStart(2, "0");
         halltickets.push(`${hallticket}${i.toString().padStart(2, "0")}`);
         if (Number(last) === regularhall){
           break
@@ -41,9 +37,9 @@ export const generateHallTicket = (hallticket: any, regular: any, lateral: any) 
       for (let i = 1; i <= 99; i++) {
         halltickets.push(`${hallticket}${i.toString().padStart(2, "0")}`);
       }
-      for (let letter of "ABCDEFGHIJ") {
+      for (const letter of "ABCDEFGHIJ") {
         for (let i = 0; i <= 9; i++) {
-          let last = letter+i;
+          const last = letter+i;
           halltickets.push(`${hallticket}${letter}${i}`);
           if (last === regularhall){
             flag = true
@@ -63,7 +59,7 @@ export const generateHallTicket = (hallticket: any, regular: any, lateral: any) 
   if (typeof lateralhall === "number") {
     if (lateralhall !== 0){
     for (let i = 1; i <= 99; i++) {
-      let last = i.toString().padStart(2, "0");
+      const last = i.toString().padStart(2, "0");
       halltickets.push(`${lebase}${i.toString().padStart(2, "0")}`);
       if (Number(last) === lateralhall){
         break
@@ -76,9 +72,9 @@ export const generateHallTicket = (hallticket: any, regular: any, lateral: any) 
     for (let i = 1; i <= 99; i++) {
       halltickets.push(`${lebase}${i.toString().padStart(2, "0")}`);
     }
-    for (let letter of "ABCDEFGHIJ") {
+    for (const letter of "ABCDEFGHIJ") {
       for (let i = 0; i <= 9; i++) {
-        let last = `${letter}${i}`;
+        const last = `${letter}${i}`;
         halltickets.push(`${lebase}${letter}${i}`);
         if (last === lateralhall){
           flag = true
@@ -110,7 +106,7 @@ else if (hallticket[4]=="5"){
     for (let i = 1; i <= 99; i++) {
       halltickets.push(`${hallticket}${i.toString().padStart(2, "0")}`);
     }
-    for (let letter of "ABCDEFGHIJ") {
+    for (const letter of "ABCDEFGHIJ") {
       for (let i = 0; i <= 9; i++) {
         const last = `${letter}${i}`;
         halltickets.push(`${hallticket}${letter}${i}`);
@@ -143,7 +139,7 @@ else if (hallticket[4]=="5"){
     for (let i = 1; i <= 99; i++) {
       halltickets.push(`${rebase}${i.toString().padStart(2, "0")}`);
     }
-    for (let letter of "ABCDEFGHIJ") {
+    for (const letter of "ABCDEFGHIJ") {
       for (let i = 0; i <= 9; i++) {
         const last = `${letter}${i}`;
         halltickets.push(`${rebase}${letter}${i}`);

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
@@ -36,7 +36,7 @@ export default function PerformanceTable({classData}: {classData: any[]}) {
     })
 
     return Object.values(performance)
-  }, [])
+  },[classData])
 
   const chartData = subjectPerformance.map(subject => ({
     name: subject.name.split(' ').slice(0, 3).join(' ') + '...',

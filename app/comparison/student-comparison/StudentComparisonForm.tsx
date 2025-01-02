@@ -28,8 +28,6 @@ import colleges from "@/lib/college";
 import branches from "@/lib/branch";
 import { StudentComparisonTable } from "./StudentTable";
 
-// Define types for the data we expect
-type StudentResult = Student[];
 
 // Define semester options
 const SemesterData = {
@@ -130,7 +128,6 @@ export default function StudentComparisonForm() {
 
   // Format the data only if there is resultData
   const { subjects, formattedData }: FormattedData = resultData && resultData.length > 0 ? formatStudentData(resultData) : { subjects: [], formattedData: [] };
-  const [selectedSubject, setSelectedSubject] = useState(subjects.length > 0 ? subjects[0].code : "");
   const collegeCode = hallticket.slice(2, 4) as keyof typeof colleges;
   const courseCode = hallticket.slice(6, 8) as keyof typeof branches;
   const collegeName = colleges[collegeCode] || "Unknown College";
@@ -150,7 +147,7 @@ export default function StudentComparisonForm() {
             <CardHeader>
               <CardTitle className="text-2xl text-center">Class Result</CardTitle>
               <CardDescription>
-                Enter one Student's <strong>Details</strong> below to get class results.
+                Enter one Student&apos;s <strong>Details</strong> below to get class results.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -222,7 +219,7 @@ export default function StudentComparisonForm() {
                     />
                   </div>
                 </div>
-                <div className="text-xs text-red-500"> Note: Enter the last student's number like <strong>20XXXXXXA9</strong> then <strong>A9</strong> otherwise <strong>0</strong></div>
+                <div className="text-xs text-red-500"> Note: Enter the last student&apos;s number like <strong>20XXXXXXA9</strong> then <strong>A9</strong> otherwise <strong>0</strong></div>
                 {/* Submit Button */}
                 <Button
                   type="submit"

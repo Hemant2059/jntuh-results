@@ -1,10 +1,9 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import calculateSGPA from "@/lib/sgpa-cal";
-import colleges from "@/lib/college";
 
 interface ResultDetails {
   NAME: string;
@@ -65,7 +64,7 @@ const ClassTable: React.FC<ClassTableProps> = ({ result }) => {
           <p className="text-[40%] md:text-base text-center  font-semibold">{result.Details.Roll_No}</p>
         </div>        
         <div className="col-span-2">
-          <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Father's Name</p>
+          <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Father Name</p>
           <p className="text-[40%] md:text-base text-center  font-semibold">{result.Details.FATHER_NAME}</p>
         </div>
       </div>

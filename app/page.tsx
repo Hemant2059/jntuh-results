@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { GraduationCap, BookOpen, Users, BarChart2 } from 'lucide-react'
-import Image from 'next/image'
 
 const resultPages = [
   { title: 'Academic Result Card', icon: GraduationCap, href: '/academic', color: 'bg-gray-100' },

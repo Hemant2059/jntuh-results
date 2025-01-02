@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { GraduationCap, BookOpen, Users, BarChart2 } from 'lucide-react'
+import { GraduationCap, BookOpen, Users} from 'lucide-react'
 
 const resultPages = [
   { title: 'class Result Compare', icon: GraduationCap, href: '/comparison/class-performance', color: 'bg-gray-100' },

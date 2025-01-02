@@ -1,8 +1,8 @@
 import calculateSGPA from "@/lib/sgpa-cal";
 import React from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent,CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell,TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import colleges from "@/lib/college";
@@ -90,7 +90,7 @@ const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
           <p className="text-[40%] md:text-base text-center  font-semibold">{result.Details.Roll_No}</p>
         </div>        
         <div className="col-span-2">
-          <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Father's Name</p>
+          <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Father Name</p>
           <p className="text-[40%] md:text-base text-center  font-semibold">{result.Details.FATHER_NAME}</p>
         </div>
       </div>
