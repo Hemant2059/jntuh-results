@@ -52,8 +52,12 @@ const getGradeColor = (grade: string): string => {
   return gradeColors[grade] || 'bg-gray-400';
 };
 
+
+
 const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
   const data = result;
+  let CGPA = 0;
+  let count =0;
 
   if (!data || !data.Details || !data.Result) {
     return <div>No data available</div>;
@@ -143,9 +147,11 @@ const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
         </Badge>
         
       </div>
+      
       </div>
       ))}
     </CardContent>
+    
   </Card>
     </div>
   );

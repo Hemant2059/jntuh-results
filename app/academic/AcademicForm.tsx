@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {z } from "zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,12 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { academicResult } from "../actions/students";
 import AcademicTable from "./AcademicTable";
-
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -24,7 +22,6 @@ const formSchema = z.object({
     .regex(/^[0-9A-Za-z]+$/, {
       message: "Hall ticket can only contain alphanumeric characters",
     }),
-  
 });
 
 export default function AcademicForm() {
@@ -36,7 +33,7 @@ export default function AcademicForm() {
 
   // Form validation function
   const validateForm = () => {
-    const formData = { hallticket};
+    const formData = { hallticket };
     const result = formSchema.safeParse(formData);
     if (!result.success) {
       const errorMessages: Record<string, string> = {};
@@ -53,87 +50,80 @@ export default function AcademicForm() {
   };
 
   // Form submit handler
-  const handleSubmit = async (formData:FormData) => {
-   
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     if (validateForm()) {
-      setLoading(true);
+      setLoading(true); // Set loading to true when the form starts submitting
       // After successful validation, navigate with query parameters
       const result = await academicResult(formData);
-        if (result.success) {           
-            setResult(result.data);
-            setShowForm(false);
-           setLoading(false);
-           
-            
-        } else {
-            setShowForm(true);
-           setLoading(false);
-        }
+      if (result.success) {
+        setResult(result.data);
+        setShowForm(false);
+      } else {
+        setShowForm(true);
+      }
+      setLoading(false); // Set loading to false after the request is done
     }
   };
-
-
-
-
 
   return (
     <div>
       {showForm ? (
-       <div className="flex m-2 flex-col justify-center items-center">
-       <Card className="mx-auto max-w-sm ">
-         <CardHeader>
-           <CardTitle className="text-2xl">Academic Result</CardTitle>
-           <CardDescription>
-             Enter your <strong>Details</strong> below to get your result.
-           </CardDescription>
-         </CardHeader>
-         <CardContent>
-           <form action={handleSubmit} className="grid gap-4">
-             {/* HallTicket Input */}
-             <div className="grid gap-2">
-               <Label htmlFor="hallticket">Hall Ticket</Label>
-               <Input
-                 id="hallticket"
-                 type="text"
-                   name="hallticket"
-                 value={hallticket}
-                 onChange={(e) => setHallticket(e.target.value.toUpperCase())}
-                 placeholder="20XXXXXX01"
-                 required
-               />
-               {errors.hallticket && (
-                 <span className="text-red-500 text-sm">{errors.hallticket}</span>
-               )}
-             </div>
-   
-               
-            
-   
-             {/* Submit Button */}
-             <Button
-               type="submit"
-               className="mt-2"
-               disabled={loading} // Disable button while loading
-             >
-               {loading ? "Finding Result..." : "Find Result"}
-             </Button>
-           </form>
-   
-           {/* Footer */}
-           <div className="text-right text-base text-[12px] font-bold mt-4">
-             by Bishal Pathak &#128420;
-           </div>
-         </CardContent>
-       </Card>
-       </div>
+        <div className="flex m-2 flex-col justify-center items-center">
+          <Card className="mx-auto max-w-sm ">
+            <CardHeader>
+              <CardTitle className="text-2xl">Academic Result</CardTitle>
+              <CardDescription>
+                Enter your <strong>Details</strong> below to get your result.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="grid gap-4">
+                {/* HallTicket Input */}
+                <div className="grid gap-2">
+                  <Label htmlFor="hallticket">Hall Ticket</Label>
+                  <Input
+                    id="hallticket"
+                    type="text"
+                    name="hallticket"
+                    value={hallticket}
+                    onChange={(e) => setHallticket(e.target.value.toUpperCase())}
+                    placeholder="20XXXXXX01"
+                    required
+                  />
+                  {errors.hallticket && (
+                    <span className="text-red-500 text-sm">{errors.hallticket}</span>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  className="mt-2"
+                  disabled={loading} // Disable button while loading
+                >
+                  {loading ? (
+                    <div className="loader">Finding Result...</div> // You can use a spinner here
+                  ) : (
+                    "Find Result"
+                  )}
+                </Button>
+              </form>
+
+              {/* Footer */}
+              <div className="text-right text-base text-[12px] font-bold mt-4">
+                by Bishal Pathak &#128420;
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       ) : (
         <div>
-            <AcademicTable result={result} />
+          {/* Display result */}
+          <AcademicTable result={result} />
         </div>
       )}
     </div>
-
-
-    
   );
 }

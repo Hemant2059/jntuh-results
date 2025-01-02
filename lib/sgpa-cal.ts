@@ -58,3 +58,6 @@ const gradePointMappingForR22: { [key: string]: number } = {
   }
   
   export default calculateSGPA;
+
+  
+ 
