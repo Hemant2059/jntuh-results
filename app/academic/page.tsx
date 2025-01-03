@@ -27,7 +27,7 @@ export const metadata = {
 
 const academicResultPage = () => {
   return (
-    <div><AcademicForm/></div>
+    <div className='mt-20'><AcademicForm/></div>
   )
 }
 

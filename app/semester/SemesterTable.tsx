@@ -8,6 +8,9 @@ import colleges from "@/lib/college";
 import branches from "@/lib/branch";
 import { Button } from "@/components/ui/button";
 
+import { usePDF } from "react-to-pdf";
+import { Download } from 'lucide-react';
+
 
 
 
@@ -52,18 +55,26 @@ const getGradeColor = (grade: string): string => {
 };
 
 const SemesterTableComponent: React.FC<TableClassProps> = ({ result , semester}) => {
-    if (!result || !result.Details || !result.Result) {
-        return <div>No result available</div>;
-    }
-    const name = result.Details.NAME || "Unknown";
-    const collegeCode = result.Details.COLLEGE_CODE as keyof typeof colleges;
-    const collegeName = colleges[collegeCode] || "Unknown";
-    const courseCode = result.Details.Roll_No.slice(6, 8) as keyof typeof branches;
-    const branch = branches[courseCode] || "Unknown";
+  if (!result || !result.Details || !result.Result) {
+    return <div>No result available</div>;
+  }
+  const name = result.Details.NAME || "Unknown";
+  const rollno = result.Details.Roll_No || "Unknown";
+  const collegeCode = result.Details.COLLEGE_CODE as keyof typeof colleges;
+  const collegeName = colleges[collegeCode] || "Unknown";
+  const courseCode = result.Details.Roll_No.slice(6, 8) as keyof typeof branches;
+  const branch = branches[courseCode] || "Unknown";
+  const { toPDF, targetRef } = usePDF({filename: `${rollno+"_"+semester}.pdf`});
 
 
   return (
-    <Card className="w-full max-w-4xl mx-auto my-4 py-4">
+    <div className="max-w-4xl mx-auto mt-20">
+      <div className="flex justify-end mb-4 mr-2">
+              <Button onClick={() => toPDF()} variant="secondary">
+                <Download className="mr-2  h-4 w-4" /> Download Result
+              </Button>
+            </div>
+    <Card className="w-full  my-4 py-4" ref={targetRef}>
     <CardContent >
       <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-center mb-4 border-b-2">
         <div>{collegeName}</div>
@@ -125,8 +136,8 @@ const SemesterTableComponent: React.FC<TableClassProps> = ({ result , semester})
         </Badge>
       </div>
     </CardContent>
-    <Button size={"default"}>Download</Button>
   </Card>
+  </div>
   );
 };
 

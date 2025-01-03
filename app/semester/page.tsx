@@ -27,7 +27,7 @@ export const metadata = {
 
 const semResultPage = () => {
   return (
-    <div><SemesterForm/></div>
+    <div className='mt-20'><SemesterForm/></div>
   )
 }
 

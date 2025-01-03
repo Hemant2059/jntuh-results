@@ -4,11 +4,51 @@ import { Student } from "@/lib/formatData";
 import calculateSGPA from "@/lib/sgpa-cal";
 import React, { useState } from "react";
 
+import { usePDF } from "react-to-pdf";
+import { Download } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
 type ComparisonTableProps = {
   students: Student[];
 };
 
+
+function getInitials(input: string): string {
+  // Define the words to exclude
+  const excludeWords = new Set(['AND']);
+
+  // Split the input string into words
+  const words = input.split(' ');
+
+  // Check if the input is a single word
+  if (words.length === 1) {
+      // Return the first four characters of the single word
+      return words[0].substring(0, 4).toUpperCase();
+  }
+
+  // Map through the words and get the first letter of each, excluding specified words
+  const initials = words.map(word => {
+      if (excludeWords.has(word)) {
+          return ''; // Exclude the word
+      }
+      if (word === "I") {
+        return " 1"; // Return ' 1' for 'I'
+    } else if (word === "IT") {
+        return " 2"; // Return ' 2' for 'IT'
+    } else if (word === 'LAB') {
+        return ' Lab'; // Return ' Lab' for 'LAB'
+    } else {
+        return word.charAt(0).toUpperCase(); // Default case: return the first letter
+    }// Keep LAB intact
+  }).filter(Boolean); // Remove empty strings from the array
+
+  // Join the initials into a string
+  return initials.join('');
+}
+
 export function StudentComparisonTable({ students }: ComparisonTableProps) {
+  const { toPDF, targetRef } = usePDF({filename: `student_comp_result.pdf`});
   if (students.length === 0 || !students[0].Result) {
     return <div>No students data available</div>;
   }
@@ -67,7 +107,28 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
 
   return (
     <div className="w-full mt-4 py-4">
-      <div>
+      <div className="flex justify-end mb-4 mr-2">
+        <Button onClick={() => toPDF()} variant="secondary">
+          <Download className="mr-2  h-4 w-4" /> Download Result
+        </Button>
+      </div>
+      <div  ref={targetRef}>
+        <Card >
+          <CardContent>
+            {subjectCodes.map((subCode)=>(
+              <React.Fragment key={subCode}>
+              <div
+                onClick={() => handleSort(subCode)}
+                style={{ cursor: "pointer" }}
+                className=" text-left"
+              >
+                <span className="font-bold">{getInitials(students[0].Result[subCode].name)}</span> = <span className="mx-4"> {students[0].Result[subCode].name}</span>
+              </div>
+            </React.Fragment>
+            ))}
+          </CardContent>
+        </Card>
+        <Card className="mt-2">
         <Table className="text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]">
           <TableHeader>
             <TableRow>
@@ -82,8 +143,9 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
                   <TableHead
                     onClick={() => handleSort(subCode)}
                     style={{ cursor: "pointer" }}
+                    className=" text-center"
                   >
-                    {subCode} {getSortIcon(subCode)}
+                    {getInitials(students[0].Result[subCode].name)}{getSortIcon(subCode)}
                   </TableHead>
                 </React.Fragment>
               ))}
@@ -103,7 +165,7 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
                   const subject = student.Result[subCode];
                   return (
                     <React.Fragment key={subCode}>
-                      <TableCell>{subject.grade}</TableCell>
+                      <TableCell className="text-center">{subject.grade}</TableCell>
                     </React.Fragment>
                   );
                 })}
@@ -112,6 +174,7 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
             ))}
           </TableBody>
         </Table>
+        </Card>
       </div>
     </div>
   );
