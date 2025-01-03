@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -53,6 +54,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {process.env.NODE_ENV === 'production' && <Analytics />}
+          {process.env.NODE_ENV === 'production' && <SpeedInsights/>}
           <Navbar />
           <main className="mt-16">{children}</main>
         </ThemeProvider>
