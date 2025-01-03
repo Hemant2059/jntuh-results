@@ -12,7 +12,7 @@ const resultPages = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4 py-12">
         
           <div className="text-center  mb-8">
