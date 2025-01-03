@@ -50,14 +50,13 @@ const getGradeColor = (grade: string): string => {
 
 
 const ClassTable: React.FC<ClassTableProps> = ({ result }) => {
-  const name = result.Details.NAME || "Unknown";
   return (
     <Card className="w-full max-w-4xl mx-auto mt-4 py-4">
     <CardContent >
       <div className="grid grid-cols-5  gap-2 mb-3 px-2 pb-0">
         <div className="col-span-2">
           <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Name</p>
-          <p className="text-[40%] md:text-base text-center  font-semibold">{name === "BISHAL PATHAK" ? "DHAYLE BHAI 😂" : name}</p>
+          <p className="text-[40%] md:text-base text-center  font-semibold">{result.Details.NAME}</p>
         </div>
         <div>
           <p className="text-[40%] md:text-base text-center  font-medium text-muted-foreground">Hall Ticket</p>

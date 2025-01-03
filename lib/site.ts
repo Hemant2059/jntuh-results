@@ -3,8 +3,8 @@ export const site = {
     title: 'JNTUH Result Portal',
     description: 'Access your JNTUH academic, class, and semester results with ease. Compare and track student performance in just a click.',
     url: 'https://jntuhresultbp.vercel.app', // Your base website URL
-    keywords: 'JNTUH, Result Portal, Academic Results, Class Results, Semester Results, Student Performance',
-    author: 'Your Name or Organization',
+    keywords: 'JNTUH, Result Portal, Academic Results, Class Results, Semester Results, Student Performance, vercel, jntuh result vercel, jntuh vercel jntuh result, ',
+    author: 'Hemant Pandey',
   
     openGraph: {
       title: 'JNTUH Result Portal',
