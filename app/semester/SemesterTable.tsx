@@ -8,7 +8,6 @@ import colleges from "@/lib/college";
 import branches from "@/lib/branch";
 import { Button } from "@/components/ui/button";
 
-import { usePDF } from "react-to-pdf";
 import { Download } from 'lucide-react';
 
 
@@ -64,17 +63,16 @@ const SemesterTableComponent: React.FC<TableClassProps> = ({ result , semester})
   const collegeName = colleges[collegeCode] || "Unknown";
   const courseCode = result.Details.Roll_No.slice(6, 8) as keyof typeof branches;
   const branch = branches[courseCode] || "Unknown";
-  const { toPDF, targetRef } = usePDF({filename: `${rollno+"_"+semester}.pdf`});
 
 
   return (
     <div className="max-w-4xl mx-auto mt-20">
-      <div className="flex justify-end mb-4 mr-2">
-              <Button onClick={() => toPDF()} variant="secondary">
+      <div className="flex justify-end mb-4 mr-2 print:hidden">
+              <Button onClick={() => window.print()} variant="secondary">
                 <Download className="mr-2  h-4 w-4" /> Download Result
               </Button>
             </div>
-    <Card className="w-full  my-4 py-4" ref={targetRef}>
+    <Card className="w-full  my-4 py-4">
     <CardContent >
       <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-center mb-4 border-b-2">
         <div>{collegeName}</div>

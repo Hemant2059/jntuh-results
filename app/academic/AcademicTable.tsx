@@ -1,7 +1,5 @@
 import calculateSGPA from "@/lib/sgpa-cal";
 import React from "react";
-import { usePDF } from "react-to-pdf";
-import { Download } from 'lucide-react';
 
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import colleges from "@/lib/college";
 import branches from "@/lib/branch";
+import { Download } from "lucide-react";
 
 interface Subject {
   name: string;
@@ -68,23 +67,22 @@ const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
   const collegeName = colleges[collegeCode] || "Unknown";
   const courseCode = result.Details.Roll_No.slice(6, 8) as keyof typeof branches;
   const branch = branches[courseCode] || "Unknown";
-  const { toPDF, targetRef } = usePDF({filename: `${rollno}_result.pdf`});
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col items-center justify-center py-2 font-bold text-xl">
+      <div className="flex flex-col items-center justify-center py-2 font-bold text-xl print:hidden">
         <h1>Academic Results</h1>
       </div>
 
-      <div className="flex justify-end mb-4 mr-2">
-        <Button onClick={() => toPDF()} variant="secondary">
+      <div className="flex justify-end mb-4 mr-2 print:hidden">
+        <Button onClick={() => window.print()} variant="secondary">
           <Download className="mr-2  h-4 w-4" /> Download Result
         </Button>
       </div>
 
-      <div ref={targetRef}>
+      <div>
         <Card className="w-full max-w-4xl mx-auto mt-4 py-4">
-          <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-center mb-6 pb-4 border-b-2">
+          <CardTitle className="text-base md:text-xl lg:text-2xl font-bold text-center mb-6 pb-4 border-b-2">
             <div>{collegeName}</div>
             <div className="text-base text-gray-600">{branch}</div>
           </CardTitle>

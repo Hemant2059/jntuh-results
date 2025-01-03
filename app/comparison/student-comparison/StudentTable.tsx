@@ -4,7 +4,6 @@ import { Student } from "@/lib/formatData";
 import calculateSGPA from "@/lib/sgpa-cal";
 import React, { useState } from "react";
 
-import { usePDF } from "react-to-pdf";
 import { Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,7 +47,6 @@ function getInitials(input: string): string {
 }
 
 export function StudentComparisonTable({ students }: ComparisonTableProps) {
-  const { toPDF, targetRef } = usePDF({filename: `student_comp_result.pdf`});
   if (students.length === 0 || !students[0].Result) {
     return <div>No students data available</div>;
   }
@@ -107,12 +105,12 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
 
   return (
     <div className="w-full mt-4 py-4">
-      <div className="flex justify-end mb-4 mr-2">
-        <Button onClick={() => toPDF()} variant="secondary">
+      <div className="flex justify-end mb-4 mr-2 print:hidden">
+        <Button onClick={() => window.print()} variant="secondary">
           <Download className="mr-2  h-4 w-4" /> Download Result
         </Button>
       </div>
-      <div  ref={targetRef}>
+      <div >
         <Card >
           <CardContent>
             {subjectCodes.map((subCode)=>(

@@ -25,9 +25,7 @@ import ClassTable from "./ClassTable";
 import { generateHallTicket } from "@/lib/hallgeneration";
 import colleges from "@/lib/college";
 import branches from "@/lib/branch";
-
-import { usePDF } from "react-to-pdf";
-import { Download } from 'lucide-react';
+import { Download } from "lucide-react";
 
 // Define types for the data we expect
 interface StudentResult {
@@ -134,7 +132,6 @@ export default function ClassForm() {
   const collegeName = colleges[collegeCode] || "Unknown College";
   const courseName = branches[courseCode] || "Unknown Course";
   
-  const { toPDF, targetRef } = usePDF({filename: 'class_result.pdf'});
   return (
     <div>
       {showForm ? (
@@ -234,12 +231,12 @@ export default function ClassForm() {
         </div>
       ) : (
         <div className="max-w-4xl mx-auto">
-          <div className="flex justify-end mb-4 mr-2">
-                  <Button onClick={() => toPDF()} variant="secondary">
+          <div className="flex justify-end mb-4 mr-2 print:hidden">
+                  <Button onClick={() => window.print()} variant="secondary">
                     <Download className="mr-2  h-4 w-4" /> Download Result
                   </Button>
                 </div>
-          <div ref={targetRef}>
+          <div >
           <Card className="w-full  py-2 my-2 overflow-x-hidden" >
               <CardContent>
                 <div className=" gap-2 px-2">

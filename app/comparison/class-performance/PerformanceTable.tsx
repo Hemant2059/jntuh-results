@@ -7,12 +7,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 
 // Sample data for multiple students (using the same data as before)
 
-import { usePDF } from "react-to-pdf";
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button'
 
 export default function PerformanceTable({classData}: {classData: any[]}) {
-  const { toPDF, targetRef } = usePDF({filename: `class_comp_result.pdf`});
   const subjectPerformance = useMemo(() => {
     const performance: { [key: string]: { name: string, averageTotal: number, averageInternal: number, averageExternal: number, count: number } } = {}
     classData.forEach(student => {
@@ -53,7 +51,7 @@ export default function PerformanceTable({classData}: {classData: any[]}) {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Class Subject Performance Comparison</h1>
       
-      <Card className="mb-8">
+      <Card className="mb-8 print:hidden">
         <CardHeader>
           <CardTitle>Overall Subject Performance Chart</CardTitle>
           <CardDescription>Comparing average marks for all subjects</CardDescription>
@@ -76,12 +74,12 @@ export default function PerformanceTable({classData}: {classData: any[]}) {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end mb-4 mr-2">
-        <Button onClick={() => toPDF()} variant="secondary">
+      <div className="flex justify-end mb-4 mr-2 print:hidden">
+        <Button onClick={() => window.print()} variant="secondary">
           <Download className="mr-2  h-4 w-4" /> Download Result
         </Button>
       </div>
-      <Card ref={targetRef}>
+      <Card >
         <CardHeader>
           <CardTitle>Detailed Subject Performance</CardTitle>
           <CardDescription>Breakdown of average performance for each subject</CardDescription>
