@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,8 +30,6 @@ import { formatStudentData, FormattedData, Student } from "@/lib/formatData";
 import colleges from "@/lib/college";
 import branches from "@/lib/branch";
 
-
-
 // Define semester options
 const SemesterData = {
   "1-1": "I Year I Semester",
@@ -44,6 +42,9 @@ const SemesterData = {
   "4-2": "IV Year II Semester",
 };
 
+// Expiration duration in milliseconds (e.g., 24 hours)
+const EXPIRATION_DURATION = 24 * 60 * 60 * 1000;
+
 export default function SubjectForm() {
   const [hallticket, setHallticket] = useState("");
   const [semester, setSemester] = useState<keyof typeof SemesterData | "">("");
@@ -52,9 +53,37 @@ export default function SubjectForm() {
   const [showForm, setShowForm] = useState(true);
   const [regular, setRegular] = useState("");
   const [lateral, setLateral] = useState("");
+  
+    const [loadingTickets, setLoadingTickets] = useState<Set<string>>(new Set());
 
-  // State to store all students' results and loading hallticket for real-time feedback
+
+  // State to store all students' results
   const [resultData, setResultData] = useState<Student[]>([]);
+
+  // Store data with expiration date in localStorage
+  const storeDataWithExpiration = (key: string, data: any) => {
+    const now = new Date().getTime();
+    const item = {
+      data,
+      expiration: now + EXPIRATION_DURATION,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
+  // Get data from localStorage and check expiration
+  const getDataFromLocalStorage = (key: string) => {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+
+    const item = JSON.parse(itemStr);
+    const now = new Date().getTime();
+    if (now > item.expiration) {
+      localStorage.removeItem(key); // Remove expired item
+      return null; // Data has expired
+    }
+
+    return item.data; // Return valid data
+  };
 
   // Zod validation for the form
   const formSchema = z.object({
@@ -96,31 +125,53 @@ export default function SubjectForm() {
       const basePart = hallticket.slice(0, 8);
       const halltickets = generateHallTicket(basePart, regular, lateral);
 
+      // Results array to accumulate the fetched results
+      const results: Student[] = [];
+
       // Create an array of promises for each API call
       const fetchPromises = halltickets.map(async (hallticket) => {
-        const formData = new FormData();
-        formData.append("hallticket", hallticket);
-        formData.append("semester", semester);
+        const localStorageKey = `${hallticket}_${semester}`;
+        const cachedData = getDataFromLocalStorage(localStorageKey);
 
-        try {
-          const result = await semResult(formData);
-          if (result.success && result.data.Details?.Roll_No) {
-            return result.data;
+        // Mark the hallticket as loading
+        setLoadingTickets((prev) => new Set(prev).add(hallticket));
+
+        if (cachedData) {
+          // If data is found in localStorage and not expired, use it
+          results.push(cachedData);
+        } else {
+          // Fetch from API if not in cache or data has expired
+          const formData = new FormData();
+          formData.append("hallticket", hallticket);
+          formData.append("semester", semester);
+
+          try {
+            const result = await semResult(formData);
+            if (result.success && result.data.Details?.Roll_No) {
+              storeDataWithExpiration(localStorageKey, result.data); // Cache the result with expiration
+              results.push(result.data);
+            }
+          } catch (error) {
+            console.error(`Error fetching data for hallticket ${hallticket}:`, error);
           }
-        } catch (error) {
-          console.error(`Error fetching data for hallticket ${hallticket}:`, error);
         }
-        return null; // If error occurs, return null
+
+        // Mark the hallticket as done (not loading)
+        setLoadingTickets((prev) => {
+          const updated = new Set(prev);
+          updated.delete(hallticket);
+          return updated;
+        });
       });
 
       // Wait for all promises to resolve
-      const results = await Promise.all(fetchPromises);
+      await Promise.all(fetchPromises);
 
       // Filter out null results in case of failed API calls
       const validResults = results.filter((result) => result !== null);
 
       // Update the state with valid results
-      setResultData((prevData) => [...prevData, ...validResults]);
+      setResultData(validResults);
 
       setLoading(false); // Stop loading state after all results are fetched
       setShowForm(false); // Hide form after submission
@@ -136,15 +187,23 @@ export default function SubjectForm() {
   const courseCode = hallticket.slice(6, 8) as keyof typeof branches;
   const collegeName = colleges[collegeCode] || "Unknown College";
   const courseName = branches[courseCode] || "Unknown Course";
+  // Memoize the list of loading tickets
+    const loadingMessages = useMemo(() => {
+      return Array.from(loadingTickets).map((ticket) => (
+        <p key={ticket} className="text-sm text-gray-500">
+          Loading result for hallticket {ticket}...
+        </p>
+      ));
+    }, [loadingTickets]);
+
   return (
     <div>
       {loading ? (
-        <div className="flex m-2 flex-col items-center justify-center">
-          <Spinner className="h-12 w-12" />
-          <p className="mt-4 text-lg">Loading results...</p>
-          <p className="mt-4 text-lg">might take longer time</p>
-          <p className="mt-4 text-lg">wait for a minute</p>
-        </div>
+        <div className="flex h-screen flex-col items-center justify-center mt-20">
+                  <Spinner className="h-12 w-12" />
+                  <p className="mt-4 text-lg">Loading results...</p>
+                  <div className="mt-4">{loadingMessages}</div>
+                </div>
       ) : showForm ? (
         <div className="flex h-screen flex-col justify-center items-center">
           <Card className="mx-auto max-w-sm">
@@ -238,24 +297,22 @@ export default function SubjectForm() {
         </div>
       ) : (
         <div className="container mx-auto py-10 px-2">
-      <Card className="p-4">
-        <CardTitle className="mb-2 border-b-2 text-center">
-          <p className="text-lg font-semibold">{collegeName}</p>
-          <p className="text-lg font-semibold">{courseName}</p>
-          <p className="text-lg font-semibold">{semester ? SemesterData[semester] : "Unknown Semester"}</p>
-
-        </CardTitle>
-        
-        <CardContent>
-      <div className="mb-5 border-b-2 m-4 p-2">
-        <SubjectDropdown subjects={subjects} onSubjectChange={setSelectedSubject} />
-      </div>
-      <ComparisonTable students={formattedData} selectedSubject={selectedSubject}  subjects={subjects}  />
-      </CardContent>
-      </Card>
-    </div>
-
-      )}      
+          <Card className="p-4">
+            <CardTitle className="mb-2 border-b-2 text-center">
+              <p className="text-lg font-semibold">{collegeName}</p>
+              <p className="text-lg font-semibold">{courseName}</p>
+              <p className="text-lg font-semibold">{semester ? SemesterData[semester] : "Unknown Semester"}</p>
+            </CardTitle>
+            
+            <CardContent>
+              <div className="mb-5 border-b-2 m-4 p-2">
+                <SubjectDropdown subjects={subjects} onSubjectChange={setSelectedSubject} />
+              </div>
+              <ComparisonTable students={formattedData} selectedSubject={selectedSubject} subjects={subjects} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

@@ -120,7 +120,7 @@ export function StudentComparisonTable({ students }: ComparisonTableProps) {
                 style={{ cursor: "pointer" }}
                 className=" text-left"
               >
-                <span className="font-bold">{getInitials(students[0].Result[subCode].name)}</span> = <span className="mx-4"> {students[0].Result[subCode].name}</span>
+                <span className="font-bold text-[50%] md:text-[100%]">{getInitials(students[0].Result[subCode].name)}</span> = <span className="mx-4 text-[50%] md:text-[100%]"> {students[0].Result[subCode].name}</span>
               </div>
             </React.Fragment>
             ))}

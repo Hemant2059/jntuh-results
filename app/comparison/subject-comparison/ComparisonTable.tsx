@@ -25,7 +25,7 @@ export function ComparisonTable({ students, selectedSubject,subjects}: Compariso
           <Download className="mr-2  h-4 w-4" /> Download Result
         </Button>
       </div>
-      <CardContent >
+      <CardContent>
     <Table className="text-[30%] sm:text-[45%] md:text-[60%] lg:text-[100%]  ">
       <TableHeader>
         <TableRow>
