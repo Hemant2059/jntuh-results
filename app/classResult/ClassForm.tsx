@@ -1,6 +1,7 @@
-"use client"
-import React, { useState } from "react";
-import {z } from "zod";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,6 +38,7 @@ interface StudentResult {
   };
   Result: Record<string, { name: string; grade: string; total: string }>;
 }
+
 // Define semester options
 const SemesterData = {
   "1-1": "I Year I Semester",
@@ -49,8 +51,10 @@ const SemesterData = {
   "4-2": "IV Year II Semester",
 };
 
+const EXPIRATION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 export default function ClassForm() {
-  const [hallticket, setHallticket] = useState("");
+  const [hallticket, setHallticket] = useState<string>("");
   const [semester, setSemester] = useState<keyof typeof SemesterData | "">("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -61,6 +65,31 @@ export default function ClassForm() {
   // State to store all students' results and loading hallticket for real-time feedback
   const [resultData, setResultData] = useState<StudentResult[]>([]);
   const [loadingHallTicket, setLoadingHallTicket] = useState<string | null>(null);
+
+  // Store data with expiration date in localStorage
+  const storeDataWithExpiration = (key: string, data: any) => {
+    const now = new Date().getTime();
+    const item = {
+      data,
+      expiration: now + EXPIRATION_DURATION,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
+  // Get data from localStorage and check expiration
+  const getDataFromLocalStorage = (key: string) => {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+
+    const item = JSON.parse(itemStr);
+    const now = new Date().getTime();
+    if (now > item.expiration) {
+      localStorage.removeItem(key); // Remove expired item
+      return null; // Data has expired
+    }
+
+    return item.data; // Return valid data
+  };
 
   // Zod validation for the form
   const formSchema = z.object({
@@ -93,11 +122,11 @@ export default function ClassForm() {
 
   // Form submit handler
   const handleSubmit = async (formData: FormData) => {
-    
     const basehallticket = formData.get("hallticket") || "";
     const regular = formData.get("regular");
     let lateral = formData.get("lateral");
     if (!lateral) lateral = "0"; 
+
     if (validateForm()) {
       setLoading(true);
       const basePart = basehallticket.slice(0, 8);
@@ -106,6 +135,19 @@ export default function ClassForm() {
       // Fetch results for each hallticket and store them incrementally in resultData state
       for (const hallticket of halltickets) {
         setLoadingHallTicket(hallticket); // Set current hallticket as loading
+
+        // Construct a unique key using hallticket and semester
+        const cacheKey = `${hallticket}_${semester}`;
+
+        // First check if we already have data in localStorage
+        const cachedResult = getDataFromLocalStorage(cacheKey);
+        if (cachedResult) {
+          // Use cached data if available
+          setResultData((prevData) => [...prevData, cachedResult]);
+          continue;
+        }
+
+        // If not in cache, fetch from the API
         const formData = new FormData();
         formData.append("hallticket", hallticket);
         formData.append("semester", semester);
@@ -115,14 +157,18 @@ export default function ClassForm() {
           if (result.data.Details.Roll_No) {
             // Add the result of the current student to the resultData state
             setResultData((prevData) => [...prevData, result.data]);
+
+            // Store the result in localStorage for future use
+            storeDataWithExpiration(cacheKey, result.data);
+
             setShowForm(false);
           }
         } else {
           setLoading(false);
         }
       }
-       // Hide form after submission
-      setLoading(false); // Stop loading state after all results are fetched
+      // Stop loading state after all results are fetched
+      setLoading(false); 
       setLoadingHallTicket(null); // Reset current hallticket loading indicator
     }
   };
@@ -131,7 +177,7 @@ export default function ClassForm() {
   const courseCode = hallticket.slice(6, 8) as keyof typeof branches;
   const collegeName = colleges[collegeCode] || "Unknown College";
   const courseName = branches[courseCode] || "Unknown Course";
-  
+
   return (
     <div>
       {showForm ? (
@@ -186,7 +232,6 @@ export default function ClassForm() {
                 </div>
 
                 {/* Regular and Lateral Entry Inputs */}
-                
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label htmlFor="regular">Regular <span className="text-red-700">*</span></Label>
@@ -213,7 +258,9 @@ export default function ClassForm() {
                     />
                   </div>
                 </div>
+
                 <div className="text-xs text-red-500"> Note: Enter the last student&apos;s number like <strong>20XXXXXXA9</strong> then <strong>A9</strong> otherwise <strong>0</strong></div>
+
                 {/* Submit Button */}
                 <Button
                   type="submit"
@@ -223,39 +270,35 @@ export default function ClassForm() {
                   {loading ? "Finding Result..." : "Find Result"}
                 </Button>
               </form>
-              <div className="text-right text-base text-[12px] font-bold mt-4">
-             by Bishal Pathak &#128420;
-           </div>
             </CardContent>
           </Card>
         </div>
       ) : (
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-end mb-4 mr-2 print:hidden">
-                  <Button onClick={() => window.print()} variant="secondary">
-                    <Download className="mr-2  h-4 w-4" /> Download Result
-                  </Button>
+            <Button onClick={() => window.print()} variant="secondary">
+              <Download className="mr-2 h-4 w-4" /> Download Result
+            </Button>
+          </div>
+          <Card className="w-full py-2 my-2 overflow-x-hidden">
+            <CardContent>
+              <div className="gap-2 px-2">
+                <div className="flex gap-4 items-center">
+                  <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">College Name: </p>
+                  <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{collegeName}</p>
                 </div>
-          <div >
-          <Card className="w-full  py-2 my-2 overflow-x-hidden" >
-              <CardContent>
-                <div className=" gap-2 px-2">
-                  <div className="flex gap-4 items-center">
-                    <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">College Name : </p>
-                    <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{collegeName}</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">Course Name : </p>
-                    <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{courseName}</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">Year : </p>
-                    <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{semester ? SemesterData[semester] : "Unknown Semester"}</p>
-                  </div>
-                  
+                <div className="flex gap-4 items-center">
+                  <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">Course Name: </p>
+                  <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{courseName}</p>
                 </div>
-                </CardContent>
-              </Card>
+                <div className="flex gap-4 items-center">
+                  <p className="text-[40%] md:text-md lg:text-lg font-medium text-muted-foreground text-center">Year: </p>
+                  <p className="text-[40%] md:text-md lg:text-lg font-semibold text-center">{semester ? SemesterData[semester] : "Unknown Semester"}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {loadingHallTicket && <p className="fixed bottom-5 right-5 z-50 bg-slate-900 rounded-2xl text-white p-4">Loading  {loadingHallTicket}</p>}
           <div>{resultData.map((data: any,index:number) => {
 
@@ -263,7 +306,6 @@ export default function ClassForm() {
               <ClassTable key={index} result={data} />
             );
           })}</div>
-          </div>
         </div>
       )}
     </div>
