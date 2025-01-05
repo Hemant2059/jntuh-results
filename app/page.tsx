@@ -20,7 +20,10 @@ export default function Home() {
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">Access your academic performance with ease</p>
           </div>
           <div className="mb-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded-lg shadow-lg text-center mx-auto">
-            <p className="text-base md:text-lg font-semibold">NOTE: This is not the JNTUH official website. Please refer to the official website for clarification</p>
+            <p className="text-base md:text-lg font-semibold">NOTE: This is not the JNTUH official website. Please refer to the official website for clarification.</p>
+            <p className="text-base md:text-lg font-semibold">Click <a href="https://results.jntuh.ac.in/" target="_blank" rel="noopener noreferrer" className='underline'>
+  Here
+</a></p>
             
           </div>
         
@@ -44,7 +47,7 @@ export default function Home() {
         </div>
       </div>
       <footer className="mt-16 text-center text-gray-600 dark:text-gray-400 pb-8">
-        <p>&copy; 2025 Student Result Portal. All rights reserved.</p>
+        <p>&copy; 2025 Student Result Portal</p>
       </footer>
     </div>
   )

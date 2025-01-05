@@ -1,4 +1,4 @@
-import calculateSGPA from "@/lib/sgpa-cal";
+import calculateSGPA, { calculateCGPA } from "@/lib/sgpa-cal";
 import React from "react";
 
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -151,6 +151,13 @@ const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
                 </div>
               </div>
             ))}
+
+            <Card><div className="m-2 flex justify-between items-center px-4 bg-slate-200">
+                  <p className="text-[40%] md:text-md lg:text-lg font-semibold">CGPA</p>
+                  <Badge variant="outline" className="text-[40%] md:text-md lg:text-lg px-4 py-2">
+                    {calculateCGPA(data.Result, data.Details.Roll_No)}
+                  </Badge>
+                </div></Card>
           </CardContent>
         </Card>
       </div>

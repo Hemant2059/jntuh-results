@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { GraduationCap, BookOpen, Users } from 'lucide-react'
 
 const resultPages = [
-  { title: 'Class Result Compare', icon: GraduationCap, href: '/comparison/class-performance', color: 'bg-gray-100' },
-  { title: 'SubjectWise Compare', icon: BookOpen, href: '/comparison/subject-comparison', color: 'bg-gray-200' },
+  { title: 'Class Performance', icon: GraduationCap, href: '/comparison/class-performance', color: 'bg-gray-100' },
+  { title: 'SubjectWise Performance', icon: BookOpen, href: '/comparison/subject-comparison', color: 'bg-gray-200' },
   { title: 'Students Result Compare', icon: Users, href: '/comparison/student-comparison', color: 'bg-gray-300' },
 ]
 
@@ -57,7 +57,7 @@ export default function Home() {
         </div>
       </div>
       <footer className="mt-16 text-center text-gray-600 dark:text-gray-400">
-        <p>&copy; 2023 Student Result Portal. All rights reserved.</p>
+        <p>&copy; 2023 Student Result Portal.</p>
       </footer>
     </div>
   )

@@ -1,15 +1,15 @@
 // app/site.ts
 export const site = {
-    title: 'JNTUH Result Portal',
-    description: 'Access your JNTUH academic, class, and semester results with ease. Compare and track student performance in just a click.',
+    title: 'JNTUH Result Portal Vercel',
+    description: 'Access your JNTUH academic, class, and semester results with ease. Compare and track student performance in just a click.jntuh vercel',
     url: 'https://jntuhresultbp.vercel.app', // Your base website URL
-    keywords: 'JNTUH, Result Portal, Academic Results, Class Results, Semester Results, Student Performance, vercel, jntuh result vercel, jntuh vercel jntuh result, ',
+    keywords: 'JNTUH,vercel, jntuh result vercel, jntuh vercel, jntuh result, Result Portal, Academic Results, Class Results, Semester Results, Student Performance ',
     author: 'Hemant Pandey',
   
     openGraph: {
-      title: 'JNTUH Result Portal',
-      description: 'Access and compare your academic, semester, and class results with ease.',
-      siteName: 'JNTUH Result Portal',
+      title: 'JNTUH Result Portal Vercel',
+      description: 'Access and compare your academic, semester, and class results with ease through jntuh vercel portal.',
+      siteName: 'JNTUH Result Portal Vercel',
       images: [
         {
           url: 'https://jntuhresultbp.vercel.app/image.png',
