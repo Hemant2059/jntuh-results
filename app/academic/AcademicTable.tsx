@@ -152,7 +152,7 @@ const AcademicTable: React.FC<TableComponentProps> = ({ result }) => {
               </div>
             ))}
 
-            <Card><div className="m-2 flex justify-between items-center px-4 bg-slate-200">
+            <Card><div className="m-2 flex justify-between items-center px-4">
                   <p className="text-[40%] md:text-md lg:text-lg font-semibold">CGPA</p>
                   <Badge variant="outline" className="text-[40%] md:text-md lg:text-lg px-4 py-2">
                     {calculateCGPA(data.Result, data.Details.Roll_No)}

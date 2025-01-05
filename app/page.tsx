@@ -18,15 +18,14 @@ export default function Home() {
           <div className="text-center  mb-8">
             <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">Student Result Portal</h1>
             <p className="text-base md:text-lg text-gray-600 dark:text-gray-300">Access your academic performance with ease</p>
-            <p className="text-base font-bold bg-slate-500 p-2 text-gray-300 dark:text-gray-300">If you have any suggestion / feedback. <span>Click <a href="https://forms.gle/tkFeACY69enzZxEH9" target="_blank" rel="noopener noreferrer" className='underline'>
+            <p className="text-base font-bold bg-slate-500 p-2 text-gray-300 dark:text-gray-300 rounded-lg">If you have any suggestion / feedback. <span>Click <a href="https://forms.gle/tkFeACY69enzZxEH9" target="_blank" rel="noopener noreferrer" className='underline'>
   Here
 </a></span></p>
           </div>
           <div className="mb-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-4 rounded-lg shadow-lg text-center mx-auto">
-            <p className="text-base md:text-lg font-semibold">NOTE: This is not the JNTUH official website. Please refer to the official website for clarification.</p>
-            <p className="text-base md:text-lg font-semibold">Click <a href="https://results.jntuh.ac.in/" target="_blank" rel="noopener noreferrer" className='underline'>
-  Here
-</a></p>
+            <p className="text-base md:text-lg font-semibold">NOTE: This is not the JNTUH official website. Please refer to the official website for clarification. Click <a href="https://results.jntuh.ac.in/" target="_blank" rel="noopener noreferrer" className='underline'>
+            Here</a></p>
+            
             
           </div>
         
