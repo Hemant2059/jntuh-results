@@ -35,6 +35,9 @@ const SemesterData = {
   "4-2": "IV Year II Semester",
 };
 
+// Expiration duration in milliseconds (e.g., 24 hours)
+const EXPIRATION_DURATION = 24 * 60 * 60 * 1000;
+
 // Zod schema for form validation
 const formSchema = z.object({
   hallticket: z
@@ -53,6 +56,30 @@ export default function SemesterForm() {
   const [loading, setLoading] = useState<boolean>(false); // Track form submission state
   const [showForm, setShowForm] = useState<boolean>(true);
   const [result, setResult] = useState<any>(null);
+
+  const storeDataWithExpiration = (key: string, data: any) => {
+    const now = new Date().getTime();
+    const item = {
+      data,
+      expiration: now + EXPIRATION_DURATION,
+    };
+    localStorage.setItem(key, JSON.stringify(item));
+  };
+
+  // Get data from localStorage and check expiration
+  const getDataFromLocalStorage = (key: string) => {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return null;
+
+    const item = JSON.parse(itemStr);
+    const now = new Date().getTime();
+    if (now > item.expiration) {
+      localStorage.removeItem(key); // Remove expired item
+      return null; // Data has expired
+    }
+
+    return item.data; // Return valid data
+  };
 
   // Validate the form inputs
   const validateForm = (): boolean => {
@@ -74,17 +101,27 @@ export default function SemesterForm() {
 
   // Form submit handler
   const handleSubmit = async (formData: FormData) => {
+    const hallticket = formData.get("hallticket")
+    const semester = formData.get("semester")
+    const localStorageKey = `${hallticket}_${semester}`;
     if (validateForm()) {
       setLoading(true);
+      const cachedData = getDataFromLocalStorage(localStorageKey);
+        if (cachedData) {
+          setResult(cachedData)
+          setShowForm(false);
+        }
+        else{
       const result = await semResult(formData);
       if (result.success) {
+        storeDataWithExpiration(localStorageKey, result.data);
         setResult(result.data);
         setShowForm(false);
       } else {
         setShowForm(true);
       }
       setLoading(false);
-    }
+    }}
   };
 
   return (
