@@ -119,9 +119,15 @@ export default function ClassForm() {
     setErrors({});
     return true;
   };
+  // const validate = ()=>{
+  //   if (validateForm()) {
+  //     setLoading(true);
+  //   }
+  // }
 
   // Form submit handler
   const handleSubmit = async (formData: FormData) => {
+    
     
     const basehallticket = formData.get("hallticket") || "";
     const regular = formData.get("regular");
@@ -139,26 +145,31 @@ export default function ClassForm() {
 
         const cachedData = getDataFromLocalStorage(localStorageKey);
         if (cachedData) {
-          setResultData((prevData) => [...prevData, cachedData]);
-          setShowForm(false);
-        }
-        else{
-        const formData = new FormData();
-        formData.append("hallticket", hallticket);
-        formData.append("semester", semester);
-        const result = await semResult(formData);
-
-        if (result.success) {
-          if (result.data.Details.Roll_No) {
-            storeDataWithExpiration(localStorageKey, result.data);
-            // Add the result of the current student to the resultData state
-            setResultData((prevData) => [...prevData, result.data]);
-            setShowForm(false);
+          // Check if the cached data is not already in resultData
+          if (!resultData.some(data => data.Details.Roll_No === cachedData.Details.Roll_No)) {
+            setResultData((prevData) => [...prevData, cachedData]);
           }
+          setShowForm(false);
         } else {
-          setLoading(true);
+          const formData = new FormData();
+          formData.append("hallticket", hallticket);
+          formData.append("semester", semester);
+          const result = await semResult(formData);
+        
+          if (result.success) {
+            if (result.data.Details.Roll_No) {
+              storeDataWithExpiration(localStorageKey, result.data);
+              // Check if the new result is not already in resultData
+              if (!resultData.some(data => data.Details.Roll_No === result.data.Details.Roll_No)) {
+                setResultData((prevData) => [...prevData, result.data]);
+              }
+              setShowForm(false);
+            }
+          } else {
+            setLoading(true);
+          }
         }
-      }}
+      }        
       setLoading(false);
        // Hide form after submission
        // Stop loading state after all results are fetched
@@ -169,6 +180,7 @@ export default function ClassForm() {
   const courseCode = hallticket.slice(6, 8) as keyof typeof branches;
   const collegeName = colleges[collegeCode] || "Unknown College";
   const courseName = branches[courseCode] || "Unknown Course";
+  console.log(resultData)
   
   return (
     <div>
