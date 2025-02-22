@@ -20,6 +20,10 @@ export const metadata = {
   title: `Home - ${site.title}`,
   description: site.description,
   keywords: site.keywords,
+  verification: {
+    google: "hb7T1JTtI-p5rLAWqhiYKc3BJySemkcYXlu5PEJspGs",
+  },
+  
   openGraph: {
     title: `Home - ${site.openGraph.title}`,
     description: site.openGraph.description,
